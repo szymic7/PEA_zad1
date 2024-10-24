@@ -1,7 +1,11 @@
 #include <iostream>
 #include <fstream>
 #include <cstdlib>
+#include <chrono>
+#include <random>
 #include "../headers/brute-force.h"
+#include "../headers/branch-and-bound.h"
+#include "../headers/dynamic-programming.h"
 
 using namespace std;
 
@@ -14,8 +18,18 @@ void showMenu()
     // Macierz kosztow
     int **costMatrix = nullptr;
 
-    // Brute Force algorithm
+    // Algorithms objects
     BruteForce bruteForce;
+    BranchAndBound branchAndBound;
+    DynamicProgramming dynamicProgramming;
+
+    // Inicjalizacja generatora liczb losowych
+    unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
+    std::default_random_engine rng(seed);
+
+    // Measuring time
+    chrono::high_resolution_clock::time_point startTime, endTime;
+    chrono::duration<double, std::milli> time(0);
 
     // DRUGI POZIOM MENU - TWORZENIE TABLICY/WYSWIETLANIE/SORTOWANIE
     do {
@@ -91,16 +105,13 @@ void showMenu()
                     costMatrix[i] = new int[n];
                 }
 
-                // Inicjalizacja generatora liczb losowych
-                srand(time(0));
-
                 // Wypelnienie macierzy losowymi wartosciami z przedzialu 1-150
                 for (int i = 0; i < n; i++) {
                     for (int j = 0; j < n; j++) {
                         if (i == j)
                             costMatrix[i][j] = -1; // na przekatnej macierzy wartosci -1
                         else
-                            costMatrix[i][j] = rand() % 100 + 1; // losowa liczba z przedziału 1-150
+                            costMatrix[i][j] = rng() % 100 + 1; // losowa liczba z przedziału 1-150
                     }
                 }
 
@@ -132,7 +143,13 @@ void showMenu()
 
                     bruteForce.setN(n);
                     bruteForce.setCostMatrix(costMatrix);
-                    cout << endl << "Wynik algorytmu przeszukiwania zupelnego: " << bruteForce.bruteForceAlgorithm(0) << endl;
+
+                    startTime = chrono::high_resolution_clock::now();
+                    bruteForce.bruteForceAlgorithm(0);
+                    endTime = chrono::high_resolution_clock::now();
+                    time = chrono::duration<double, std::milli>(endTime - startTime);
+                    cout << "Wynik: " << bruteForce.getResult() << endl;
+                    cout << "Czas dzialania algorytmu: " << time.count() << " ms\n" << endl;
 
                 } else {
                     cout << endl << "Nie utworzono macierzy kosztow. Utworz macierz, aby wykonac algorytm." << endl;
@@ -143,7 +160,17 @@ void showMenu()
             case 5: // Algorytm Branch & Bound
             {
                 if (costMatrix != nullptr) {
-                    // Algorytm
+
+                    branchAndBound.setN(n);
+                    branchAndBound.setCostMatrix(costMatrix);
+
+                    startTime = chrono::high_resolution_clock::now();
+                    branchAndBound.TSP();
+                    endTime = chrono::high_resolution_clock::now();
+                    time = chrono::duration<double, std::milli>(endTime - startTime);
+                    cout << "Wynik: " << branchAndBound.getFinalRes() << endl;
+                    cout << "Czas dzialania algorytmu: " << time.count() << " ms\n" << endl;
+
                 } else {
                     cout << endl << "Nie utworzono macierzy kosztow. Utworz macierz, aby wykonac algorytm." << endl;
                 }
@@ -153,7 +180,18 @@ void showMenu()
             case 6: // Algorytm Programowania dynamicznego
             {
                 if (costMatrix != nullptr) {
-                    // Algorytm
+
+                    dynamicProgramming.setN(n);
+                    dynamicProgramming.setCostMatrix(costMatrix);
+                    dynamicProgramming.setStart(rng() % n);
+
+                    startTime = chrono::high_resolution_clock::now();
+                    dynamicProgramming.dynamicProgrammingAlgorithm();
+                    endTime = chrono::high_resolution_clock::now();
+                    time = chrono::duration<double, std::milli>(endTime - startTime);
+                    cout << "Wynik: " << dynamicProgramming.getResult() << endl;
+                    cout << "Czas dzialania algorytmu: " << time.count() << " ms\n" << endl;
+
                 } else {
                     cout << endl << "Nie utworzono macierzy kosztow. Utworz macierz, aby wykonac algorytm." << endl;
                 }

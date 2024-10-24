@@ -1,17 +1,17 @@
 #ifndef PEA_ZAD1_BRUTE_FORCE_H
 #define PEA_ZAD1_BRUTE_FORCE_H
 
-class BruteForce {
+#include "algorithm.h"
 
-    int n;
-    int **costMatrix;
+class BruteForce : public Algorithm {
+
+    int result;
 
 public:
 
     BruteForce();
-    void setN(int size);
-    void setCostMatrix(int **matrix);
-    int bruteForceAlgorithm(int s);
+    void bruteForceAlgorithm(int s);
+    int getResult();
 
 };
 
