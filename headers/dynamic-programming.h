@@ -14,7 +14,7 @@ class DynamicProgramming : public Algorithm {
     int** memo; // tablica do przechowywania minimalnego kosztu odwiedzenia wszystkich miast, zaczynajac od
                 // miasta x i wiedzac, ze miasta zostaly odwiedzone zgodnie z maska bitowa
 
-    int tsp(int mask, int pos); // Metoda pomocnicza, rozwiazujaca podproblemy i zapisujaca wyniki w tablicy memo
+    int recursiveMinCost(int mask, int pos); // Metoda pomocnicza, rozwiazujaca podproblemy i zapisujaca wyniki w tablicy memo
 
 public:
     DynamicProgramming();

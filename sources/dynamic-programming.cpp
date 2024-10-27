@@ -43,7 +43,7 @@ void DynamicProgramming::setN(int size) {
 //----------------------------------------------------------------------------------
 
 // Metoda pomocnicza, zapisujaca minimalne koszty w tablicy memo
-int DynamicProgramming::tsp(int mask, int pos) {
+int DynamicProgramming::recursiveMinCost(int mask, int pos) {
 
     // Maska mask reprezentuje odwiedzone dotąd miasta; 1 - miasto juz odwiedzone, 0 - miasto jeszcze nie odwiedzone
     if (mask == ((1 << n) - 1)) {
@@ -60,7 +60,7 @@ int DynamicProgramming::tsp(int mask, int pos) {
     // Obliczamy minimalny koszt dla wszystkich nie odwiedzonych wierzcholkow
     for (int next = 0; next < n; next++) {
         if (!(mask & (1 << next))) {  // Jesli wierzcholek jeszcze nie odwiedzony
-            int new_cost = costMatrix[pos][next] + tsp(mask | (1 << next), next);
+            int new_cost = costMatrix[pos][next] + recursiveMinCost(mask | (1 << next), next);
             min_cost = min(min_cost, new_cost);
         }
     }
@@ -83,7 +83,7 @@ void DynamicProgramming::dynamicProgrammingAlgorithm() {
     }
 
     // Zaczynamy rekurencje od wierzcholka startowego, reszta jeszcze nie odwiedzona
-    result = tsp(1 << start, start); // mask = (1 << start) oznacza odwiedzony wierzcholek s
+    result = recursiveMinCost(1 << start, start); // mask = (1 << start) oznacza odwiedzony wierzcholek s
 }
 
 //----------------------------------------------------------------------------------
