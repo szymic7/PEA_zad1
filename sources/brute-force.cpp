@@ -1,5 +1,5 @@
 #include "../headers/brute-force.h"
-#include <limits.h>
+#include <climits>
 #include <vector>
 #include <algorithm>
 
@@ -14,15 +14,16 @@ BruteForce::BruteForce() : Algorithm() {
 //----------------------------------------------------------------------------------
 
 void BruteForce::bruteForceAlgorithm(int s) {
-    // Wszystkie wierzcholki, minus wierzcholek startowy s
+
+    // Wszystkie wierzcholki, oprocz wierzcholka startowego s
     vector<int> vertex;
     for (int i = 0; i < n; i++) {
         if (i != s) vertex.push_back(i);
     }
 
     int min_path = INT_MAX;
-    do {
 
+    do {
         int current_pathweight = 0;
 
         int k = s;
@@ -32,7 +33,7 @@ void BruteForce::bruteForceAlgorithm(int s) {
         }
         current_pathweight += costMatrix[k][s];
 
-        // update minimum
+        // Jesli current_pathweight < min_path, to aktualizujemy min_path
         min_path = min(min_path, current_pathweight);
 
     } while (next_permutation(vertex.begin(), vertex.end()));
