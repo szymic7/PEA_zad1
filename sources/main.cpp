@@ -187,13 +187,16 @@ void showMenu()
 
                     dynamicProgramming.setN(n);
                     dynamicProgramming.setCostMatrix(costMatrix);
-                    dynamicProgramming.setStart(rng() % n);
+                    //dynamicProgramming.setStart(rng() % n);
+                    dynamicProgramming.setStart(0);
 
                     startTime = chrono::high_resolution_clock::now();
                     dynamicProgramming.dynamicProgrammingAlgorithm();
                     endTime = chrono::high_resolution_clock::now();
                     time = chrono::duration<double, std::milli>(endTime - startTime);
                     cout << "Wynik: " << dynamicProgramming.getResult() << endl;
+                    cout << "Najlepsza sciezka: ";
+                    dynamicProgramming.printResultVertices();
                     cout << "Czas dzialania algorytmu: " << time.count() << " ms\n" << endl;
 
                 } else {
