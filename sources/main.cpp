@@ -82,6 +82,8 @@ void showMenu()
                     }
                 }
 
+                cout << endl << "Macierz kosztow zostala wczytana." << endl;
+
                 file.close();
                 break;
             }
@@ -149,6 +151,8 @@ void showMenu()
                     endTime = chrono::high_resolution_clock::now();
                     time = chrono::duration<double, std::milli>(endTime - startTime);
                     cout << "Wynik: " << bruteForce.getResult() << endl;
+                    cout << "Najlepsza sciezka: ";
+                    bruteForce.printResultVertices();
                     cout << "Czas dzialania algorytmu: " << time.count() << " ms\n" << endl;
 
                 } else {

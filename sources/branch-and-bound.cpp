@@ -35,8 +35,7 @@ void BranchAndBound::setN(int size) {
 
 //----------------------------------------------------------------------------------
 
-// Function to copy temporary solution to
-// the final solution
+// Function to copy temporary solution to the final solution
 void BranchAndBound::copyToFinal(int *curr_path) {
     for (int i=0; i<n; i++)
         final_path[i] = curr_path[i];
@@ -45,13 +44,12 @@ void BranchAndBound::copyToFinal(int *curr_path) {
 
 //----------------------------------------------------------------------------------
 
-// Function to find the minimum edge cost
-// having an end at the vertex i
+// Function to find the minimum edge cost having an end at the vertex i
 int BranchAndBound::firstMin(int i)
 {
     int min = INT_MAX;
     for (int k = 0; k < n; k++) {
-        if (costMatrix[i][k] < min && i != k)
+        if (i != k && costMatrix[i][k] > 0 && costMatrix[i][k] < min)
             min = costMatrix[i][k];
     }
     return min;
@@ -70,8 +68,7 @@ int BranchAndBound::secondMin(int i)
             continue;
 
         //if (costMatrix[i][j] <= first)
-        if (costMatrix[i][j] < first)
-        {
+        if (costMatrix[i][j] < first) {
             second = first;
             first = costMatrix[i][j];
         }
@@ -95,8 +92,7 @@ void BranchAndBound::TSPRec(int curr_bound, int curr_weight, int level, int curr
 {
     // Dla osttaniej krawedzi - do wierzcholka startowego
     if (level==n) {
-        if (costMatrix[curr_path[level-1]][curr_path[0]] != 0)
-        {
+        //if (costMatrix[curr_path[level-1]][curr_path[0]] != 0) {
             int curr_res = curr_weight + costMatrix[curr_path[level-1]][curr_path[0]];
 
             if (curr_res < final_res)
@@ -104,7 +100,7 @@ void BranchAndBound::TSPRec(int curr_bound, int curr_weight, int level, int curr
                 copyToFinal(curr_path);
                 final_res = curr_res;
             }
-        }
+        //}
         return;
     }
 
@@ -116,10 +112,11 @@ void BranchAndBound::TSPRec(int curr_bound, int curr_weight, int level, int curr
             int temp = curr_bound;
             curr_weight += costMatrix[curr_path[level-1]][i];
 
-            if (level==1)
+            /*if (level==1)
                 curr_bound -= ((firstMin(curr_path[level-1]) + firstMin(i)) / 2);
             else
-                curr_bound -= ((secondMin(curr_path[level-1]) + firstMin(i)) / 2);
+                curr_bound -= ((secondMin(curr_path[level-1]) + firstMin(i)) / 2);*/
+            curr_bound -= ((firstMin(curr_path[level-1]) + firstMin(i)) / 2);
 
             // curr_bound + curr_weight is the actual lower bound
             // for the node that we have arrived to
@@ -131,7 +128,7 @@ void BranchAndBound::TSPRec(int curr_bound, int curr_weight, int level, int curr
                 visited[i] = true;
 
                 // call TSPRec for the next level
-                TSPRec(curr_bound, curr_weight, level+1, curr_path);
+                TSPRec(curr_bound, curr_weight, level + 1, curr_path);
             }
 
             // Else we have to prune the node by resetting
@@ -170,7 +167,7 @@ void BranchAndBound::TSP()
         curr_bound += (firstMin(i) + secondMin(i));
 
     // Rounding off the lower bound to an integer
-    curr_bound = (curr_bound & 1) ? curr_bound/2 + 1 : curr_bound/2;
+    curr_bound = (curr_bound & 1) ? curr_bound / 2 + 1 : curr_bound / 2;
 
     // We start at vertex 1 so the first vertex
     // in curr_path[] is 0

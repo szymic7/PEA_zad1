@@ -2,6 +2,7 @@
 #include <climits>
 #include <vector>
 #include <algorithm>
+#include <iostream>
 
 using namespace std;
 
@@ -9,6 +10,7 @@ using namespace std;
 
 BruteForce::BruteForce() : Algorithm() {
     result = INT_MAX;
+    result_vertices = nullptr;
 }
 
 //----------------------------------------------------------------------------------
@@ -23,6 +25,9 @@ void BruteForce::bruteForceAlgorithm(int s) {
     }
 
     int min_path_cost = INT_MAX;
+
+    delete [] result_vertices;
+    result_vertices = new int[n];
 
     // Rekurencyjne wyznaczenie wszystkich permutacji zbioru wierzcholkow, z aktualizacja zmiennej min_path_cost
     generatePermutations(vertices, 0, n - 2, s, min_path_cost);
@@ -48,8 +53,17 @@ void BruteForce::generatePermutations(int* vertex, int start, int end, int s, in
         // Krawedz od ostatniego odwiedzanego wierzcholka do wierzcholka startowego
         current_path_cost += costMatrix[current_vertex][s];
 
-        // Jesli current_path_cost < min_path_cost, to aktualizujemy min_path_cost
-        min_path_cost = min(min_path_cost, current_path_cost);
+        // Jesli current_path_cost < min_path_cost, to aktualizujemy min_path_cost i najlepsza sciezke
+        if (current_path_cost < min_path_cost) {
+            min_path_cost = current_path_cost;
+
+            // Aktualizacja kolejnosci wierzcholkow dla najlepszej sciezki
+            result_vertices[0] = s;
+            int index = 1;
+            for (int i = 0; i <= end; i++) {
+                result_vertices[index++] = vertex[i];
+            }
+        }
 
     } else {
 
@@ -66,6 +80,18 @@ void BruteForce::generatePermutations(int* vertex, int start, int end, int s, in
 
 int BruteForce::getResult() {
     return result;
+}
+
+//----------------------------------------------------------------------------------
+
+void BruteForce::printResultVertices() {
+    if(result_vertices != nullptr) {
+        for (int i = 0; i < n; i++) {
+            cout << result_vertices[i] << ", ";
+        }
+        cout << result_vertices[0] << endl;
+    }
+
 }
 
 //----------------------------------------------------------------------------------
