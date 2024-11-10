@@ -66,7 +66,7 @@ int DynamicProgramming::recursiveMinCost(int mask, int pos) {
 
     int min_cost = INT_MAX;
 
-    // Obliczamy minimalny koszt dla wszystkich nie odwiedzonych wierzcholkow
+    // Obliczamy minimalny koszt dla wszystkich nieodwiedzonych wierzcholkow
     for (int next = 0; next < n; next++) {
         if (!(mask & (1 << next))) {  // Jesli wierzcholek jeszcze nie odwiedzony
             int new_cost = costMatrix[pos][next] + recursiveMinCost(mask | (1 << next), next);
@@ -113,7 +113,7 @@ void DynamicProgramming::buildResultPath() {
 
         // Szukamy kolejnej krawedzi
         for (int next = 0; next < n; next++) {
-            if (!(mask & (1 << next))) { // Jesli wierzcholek next jeszcze nie odwiedzony
+            if (!(mask & (1 << next))) { // Jesli wierzcholek next jeszcze nie wystepuje w sciezce
                 int cost = costMatrix[pos][next] + memo[mask | (1 << next)][next];
                 if (cost < min_cost) {
                     min_cost = cost;

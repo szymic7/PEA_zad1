@@ -91,7 +91,6 @@ void BruteForce::printResultVertices() {
         }
         cout << result_vertices[0] << endl;
     }
-
 }
 
 //----------------------------------------------------------------------------------

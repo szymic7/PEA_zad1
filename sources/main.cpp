@@ -4,8 +4,8 @@
 #include <chrono>
 #include <random>
 #include "../headers/brute-force.h"
-#include "../headers/branch-and-bound.h"
 #include "../headers/dynamic-programming.h"
+#include "../headers/little.h"
 
 using namespace std;
 
@@ -20,7 +20,7 @@ void showMenu()
 
     // Algorithms objects
     BruteForce bruteForce;
-    BranchAndBound branchAndBound;
+    Little little;
     DynamicProgramming dynamicProgramming;
 
     // Inicjalizacja generatora liczb losowych
@@ -165,14 +165,10 @@ void showMenu()
             {
                 if (costMatrix != nullptr) {
 
-                    branchAndBound.setN(n);
-                    branchAndBound.setCostMatrix(costMatrix);
-
                     startTime = chrono::high_resolution_clock::now();
-                    branchAndBound.TSP();
+                    little.algorithm(costMatrix, n);
                     endTime = chrono::high_resolution_clock::now();
                     time = chrono::duration<double, std::milli>(endTime - startTime);
-                    cout << "Wynik: " << branchAndBound.getFinalRes() << endl;
                     cout << "Czas dzialania algorytmu: " << time.count() << " ms\n" << endl;
 
                 } else {
@@ -187,8 +183,7 @@ void showMenu()
 
                     dynamicProgramming.setN(n);
                     dynamicProgramming.setCostMatrix(costMatrix);
-                    //dynamicProgramming.setStart(rng() % n);
-                    dynamicProgramming.setStart(0);
+                    dynamicProgramming.setStart(rng() % n);
 
                     startTime = chrono::high_resolution_clock::now();
                     dynamicProgramming.dynamicProgrammingAlgorithm();

@@ -11,7 +11,7 @@ Algorithm::Algorithm() {
 
 void Algorithm::setN(int size) {
     if(n > 0) {
-        // Czyszczenie costMatrix przed przypisaniem nowej wartosci n
+        // Czyszczenie matrix przed przypisaniem nowej wartosci n
         if (costMatrix != nullptr) {
             for (int i = 0; i < n; i++) {
                 delete[] costMatrix[i];
