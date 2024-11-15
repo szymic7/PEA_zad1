@@ -39,7 +39,7 @@ void showMenu()
         cout << "2) Wygeneruj losowo macierz kosztow" << endl;
         cout << "3) Wyswietl wczytana/wygenerowana macierz kosztow" << endl;
         cout << "4) Wykonaj algorytm przeszukania zupelnego" << endl;
-        cout << "5) Wykonaj algorytm B&B" << endl;
+        cout << "5) Wykonaj algorytm Little'a" << endl;
         cout << "6) Wykonaj algorytm programowania dynamicznego" << endl;
         cout << "7) Zakoncz" << endl;
         cout << "Wybor:";
@@ -161,14 +161,20 @@ void showMenu()
                 break;
             }
 
-            case 5: // Algorytm Branch & Bound
+            case 5: // Algorytm Little'a
             {
                 if (costMatrix != nullptr) {
 
+                    little.setN(n);
+                    little.setCostMatrix(costMatrix);
+
                     startTime = chrono::high_resolution_clock::now();
-                    little.algorithm(costMatrix, n);
+                    little.algorithm(/*costMatrix, n*/);
                     endTime = chrono::high_resolution_clock::now();
                     time = chrono::duration<double, std::milli>(endTime - startTime);
+                    cout << "Wynik: " << little.getResult() << endl;
+                    cout << "Najlepsza sciezka: ";
+                    little.printResultVertices();
                     cout << "Czas dzialania algorytmu: " << time.count() << " ms\n" << endl;
 
                 } else {
@@ -210,6 +216,62 @@ void showMenu()
         }
 
     } while (!quit);
+}
+
+void testBruteForce() {
+
+    BruteForce bruteForce;
+    int** costMatrix = nullptr;
+    int n = 5;
+
+    // Inicjalizacja generatora liczb losowych
+    unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
+    std::default_random_engine rng(seed);
+
+    // Measuring time
+    chrono::high_resolution_clock::time_point startTime, endTime;
+    chrono::duration<double, std::milli> time(0);
+
+    // 100 pomiarów
+    for(int x = 0; x < 100; x++) {
+
+        // Usuniecie wczesniej istniejacej macierzy kosztow
+        if (costMatrix != nullptr) {
+            for (int i = 0; i < n; i++) {
+                delete[] costMatrix[i];
+            }
+            delete[] costMatrix;
+        }
+
+        // Inicjalizacja nowej macierzy o wymiarach NxN
+        costMatrix = new int *[n];
+        for (int i = 0; i < n; i++) {
+            costMatrix[i] = new int[n];
+        }
+
+        // Wypelnienie macierzy losowymi wartosciami z przedzialu 1-150
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                if (i == j)
+                    costMatrix[i][j] = -1; // na przekatnej macierzy wartosci -1
+                else
+                    costMatrix[i][j] = rng() % 100 + 1; // losowa liczba z przedziału 1-150
+            }
+        }
+
+        bruteForce.setN(n);
+        bruteForce.setCostMatrix(costMatrix);
+
+        startTime = chrono::high_resolution_clock::now();
+        bruteForce.bruteForceAlgorithm(0);
+        endTime = chrono::high_resolution_clock::now();
+        time += chrono::duration<double, std::milli>(endTime - startTime);
+    }
+
+    // Ogarnąć ten typ
+    //double avg_time = time / 100.0);
+    //cout << "Sredni czas dzialania algorytmu dla n = " << n << ": " << avg_time;
+
 }
 
 int main() {

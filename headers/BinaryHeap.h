@@ -8,6 +8,8 @@
 #include <stdexcept>
 #include "C:\Users\szymo\CLionProjects\PEA_zad1\headers\little.h"
 
+using namespace std;
+
 // Kopiec minimalny, do przechowywania uporządkowanych węzłów
 class BinaryHeap {
 
@@ -18,7 +20,7 @@ class BinaryHeap {
         }
 
         Node pop() {
-            if (heap.empty()) throw std::out_of_range("Heap is empty");
+            if (heap.empty()) throw out_of_range("Heap is empty");
             Node minNode = heap[0];
             heap[0] = heap.back();
             heap.pop_back();
@@ -27,7 +29,7 @@ class BinaryHeap {
         }
 
         Node top() const {
-            if (heap.empty()) throw std::out_of_range("Heap is empty");
+            if (heap.empty()) throw out_of_range("Heap is empty");
             return heap[0];
         }
 
@@ -40,7 +42,7 @@ class BinaryHeap {
 
         void heapifyUp(int index) {
             while (index > 0 && heap[parent(index)].cost > heap[index].cost) {
-                std::swap(heap[index], heap[parent(index)]);
+                swap(heap[index], heap[parent(index)]);
                 index = parent(index);
             }
         }

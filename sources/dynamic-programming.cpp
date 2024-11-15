@@ -4,8 +4,8 @@
 //----------------------------------------------------------------------------------
 
 DynamicProgramming::DynamicProgramming() : Algorithm() {
-    result = INT_MAX;
-    result_vertices = nullptr;
+    //result = INT_MAX;
+    //result_vertices = nullptr;
     memo = nullptr;
 }
 
@@ -131,7 +131,7 @@ void DynamicProgramming::buildResultPath() {
 
 //----------------------------------------------------------------------------------
 
-int DynamicProgramming::getResult() {
+/*int DynamicProgramming::getResult() {
     return result;
 }
 
@@ -144,6 +144,6 @@ void DynamicProgramming::printResultVertices() {
         }
         cout << result_vertices[0] << endl;
     }
-}
+}*/
 
 //----------------------------------------------------------------------------------

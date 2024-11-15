@@ -9,6 +9,12 @@ using namespace std;
 
 //--------------------------------------------------------------------------------------------------------
 
+Little::Little() : Algorithm() {
+
+}
+
+//--------------------------------------------------------------------------------------------------------
+
 int** Little::copyMatrix(int** matrix, int size) {
     int** newMatrix = new int* [size];
     for (int i = 0; i < size; ++i) {
@@ -44,22 +50,21 @@ void Little::replaceZeroesWithINF(int** matrix, int size) {
 
 //--------------------------------------------------------------------------------------------------------
 
-// Funkcja do redukcji macierzy kosztów
 int Little::reduceMatrix(int** matrix, int size) {
     int reductionCost = 0;
 
-    // Redukcja wierszy
+    // Wiersze
     for (int i = 0; i < size; ++i) {
         int minRow = INF;
-        //Szukamy najmniejszego elementu w każdym wierszu
         for (int j = 0; j < size; ++j) {
             if (matrix[i][j] < minRow) {
                 minRow = matrix[i][j];
             }
         }
         if (minRow != INF && minRow != 0) {
-            //Dodajemy go do kosztu redukcji i odejmujemy od wszystkich elementów w danym wierszu
+            // Dodanie najmniejszego elementu do reductionCost
             reductionCost += minRow;
+            // Odjęcie najmniejszego elementu od wszystkich liczb w danym wierszu
             for (int j = 0; j < size; ++j) {
                 if (matrix[i][j] != INF) {
                     matrix[i][j] -= minRow;
@@ -68,18 +73,18 @@ int Little::reduceMatrix(int** matrix, int size) {
         }
     }
 
-    // Redukcja kolumn
+    // Kolumny
     for (int j = 0; j < size; ++j) {
         int minCol = INF;
-        //Szukamy najmniejszego elementu w każdej kolumnie
         for (int i = 0; i < size; ++i) {
             if (matrix[i][j] < minCol) {
                 minCol = matrix[i][j];
             }
         }
         if (minCol != INF && minCol != 0) {
-            //Dodajemy go do kosztu redukcji i odejmujemy od wszystkich elementów w danej kolumnie
+            // Dodanie najmniejszego elementu do reductionCost
             reductionCost += minCol;
+            // Odjęcie najmniejszego elementu od wszystkich liczb w danej kolumnie
             for (int i = 0; i < size; ++i) {
                 if (matrix[i][j] != INF) {
                     matrix[i][j] -= minCol;
@@ -93,30 +98,31 @@ int Little::reduceMatrix(int** matrix, int size) {
 
 //--------------------------------------------------------------------------------------------------------
 
-// Tworzenie nowego węzła w drzewie decyzyjnym.
-Node Little::createNode(int** parentMatrix, int level, int i, int j, int parentCost, std::vector<int> path, int size) {
+Node Little::newNode(int** parentMatrix, int level, int i, int j, int parentCost, std::vector<int> path, int size) {
     Node node;
     node.reducedMatrix = copyMatrix(parentMatrix, size);
     node.path = path;
 
-    //Dodajemy wierzchołek (miasto), do którego właśnie przeszliśmy na koniec naszej całej ścieżki
+    // Odwiedzane aktualnie miasto na koniec ścieżki
     if (level != 0) {
         node.path.push_back(j);
     }
-    //usuwamy wybrany wiersz i oraz kolumne j
+
+    // Usunięcie i-tego wiersza i j-tej kolumny z macierzy po redukcji
     for (int k = 0; k < size; k++) {
         node.reducedMatrix[i][k] = INF;
         node.reducedMatrix[k][j] = INF;
     }
-    //Blokujemy drogę powrotną z węzła do samego siebie
+
+    // Droga z miasta j do samego siebie
     node.reducedMatrix[j][0] = INF;
 
-    //Redukujemy nową macierz
+    // Redukcja macierzy
     node.cost = parentCost + parentMatrix[i][j];
     node.cost += reduceMatrix(node.reducedMatrix, size);    //Całkowity zaktualizowany koszt ścieżki
 
-    node.vertex = j;    //Docelowy wierzchołek j, do którego właśnie przechodzimy
-    node.level = level;     //Poziom w drzewie
+    node.vertex = j;
+    node.level = level;
 
     return node;
 
@@ -124,51 +130,50 @@ Node Little::createNode(int** parentMatrix, int level, int i, int j, int parentC
 
 //--------------------------------------------------------------------------------------------------------
 
-// Algorytm Little'a
-void Little::algorithm(int **costMatrix, int size) {
+void Little::algorithm(/*int **costMatrix, int size*/) {
 
-    int** matrix = copyMatrix(costMatrix, size);
+    int** matrix = copyMatrix(costMatrix, n);
 
-    // Zamieniamy wszystkie 0 na INF
-    replaceZeroesWithINF(matrix, size);
+    // Zamiana wszystkich wartości 0 i -1 na INF (INT_MAX)
+    replaceZeroesWithINF(matrix, n);
 
     // Kolejka priorytetowa, zaimplementowana jako kopiec binarny
     BinaryHeap pq;
     std::vector<int> initialPath = {0};
     // MOŻNA DODAĆ LOSOWY WIERZCHOŁEK STARTOWY
 
-    // Korzen drzewa
+    // Korzeń drzewa decyzyjnego - węzeł początkowy
     Node root;
-    root.reducedMatrix = copyMatrix(matrix, size);
-    root.cost = reduceMatrix(root.reducedMatrix, size); // pierwsza redukcja macierzy
+    root.reducedMatrix = copyMatrix(matrix, n);
+    root.cost = reduceMatrix(root.reducedMatrix, n); // pierwsza redukcja macierzy
     root.vertex = 0;
     root.level = 0;
     root.path = initialPath;
 
-    // Wezel poczatkowy do kolejki
+    // Węzeł początkowy do kolejki
     pq.push(root);
 
+    // Ograniczenie górne - najlepsza dotychczasowa ścieżka
     int minCost = INF;
     Node bestNode;
 
     // Przeszukiwanie drzewa
     while (!pq.empty()) {
-        // Wezel o najnizszym ograniczeniu dolnym (root kopca binarnego)
+        // Wezel o najmniejszym ograniczeniu dolnym (root kopca binarnego)
         Node current = pq.pop();
 
-//        std::cout << "Wierzcholek: " <<current.vertex << "koszt: " <<current.cost<< "Poziom: "<<current.level << std::endl;
-//        std::cout << "droga: ";
-//        for (int i = 0; i < current.path.size(); i++)
-//            std::cout << current.path[i] << " ";
-//        std::cout << std::endl;
+        /*std::cout << "Wierzcholek: " << current.vertex << ", koszt: " << current.cost<< ", poziom: "<< current.level << "droga: ";
+        for (int i = 0; i < current.path.size(); i++)
+            std::cout << current.path[i] << " ";
+        std::cout << std::endl << "Ograniczenie gorne (minCost): " << minCost << endl << endl;*/
 
         // Jesli level == size - 1, to mamy kompletna sciezke
-        if (current.level == size - 1) {
+        if (current.level == n - 1) {
 
             current.path.push_back(0);
             int totalCost = 0;
 
-            // Obliczamy calkowity koszt sciezki
+            // Calkowity koszt sciezki
             for (int k = 0; k < current.path.size() - 1; ++k) {
                 totalCost += costMatrix[current.path[k]][current.path[k + 1]];
             }
@@ -183,25 +188,33 @@ void Little::algorithm(int **costMatrix, int size) {
 
         // Jesli ograniczenie dolne aktualnie rozpatrywanego wezla < minCost, to tworzymy poddrzewa
         if(current.cost < minCost) {
-            for (int j = 0; j < size; j++) {
+            for (int j = 0; j < n; j++) {
                 if (current.reducedMatrix[current.vertex][j] != INF) {
-                    Node child = createNode(current.reducedMatrix, current.level + 1, current.vertex, j, current.cost,
-                                            current.path, size);
+                    Node child = newNode(current.reducedMatrix, current.level + 1, current.vertex, j, current.cost,
+                                         current.path, n);
                     if (child.cost < minCost) {
                         pq.push(child);
                     }
                 }
             }
         }
-        deleteMatrix(current.reducedMatrix, size);
+
+        // Wyczyszczenie pamieci dla macierzy rozpatrzonego wezla
+        deleteMatrix(current.reducedMatrix, n);
     }
 
-    deleteMatrix(matrix, size);
+    // Wyczyszczenie pamieci dla macierzy wezla poczatkowego
+    deleteMatrix(matrix, n);
 
-    cout << "Najlepsza sciezka: ";
-    for (int v : bestNode.path) std::cout << v << ", ";
-    cout << endl << "Koszt sciezki: " << minCost << endl;
+    result = minCost;
 
+    // Zapisanie najlepszej sciezki
+    if(result_vertices != nullptr) delete [] result_vertices;
+    result_vertices = new int[n+1];
+    int index = 0;
+    for(int v : bestNode.path) {
+        result_vertices[index++] = v;
+    }
 }
 
 //--------------------------------------------------------------------------------------------------------

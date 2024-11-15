@@ -8,9 +8,11 @@
 #include <vector>
 #include <limits>
 #include <queue>
+#include "algorithm.h"
 
 const int INF = std::numeric_limits<int>::max();
 
+// Struktura node do przechowywania węzłów drzewa rozwiązań
 struct Node {
     int** reducedMatrix;
     int cost;
@@ -19,16 +21,17 @@ struct Node {
     std::vector<int> path;
 };
 
-class Little {
+class Little : public Algorithm {
     public:
-        void algorithm(int** costMatrix, int size);
+        Little();
+        void algorithm(/*int** costMatrix, int size*/);
 
 private:
         void deleteMatrix(int** matrix, int size);
         int** copyMatrix(int** matrix, int size);
         void replaceZeroesWithINF(int** matrix, int size);
         int reduceMatrix(int** matrix, int size);
-        Node createNode(int** parentMatrix, int level, int i, int j, int parentCost, std::vector<int> path, int size);
+        Node newNode(int** parentMatrix, int level, int i, int j, int parentCost, std::vector<int> path, int size);
 };
 
 #endif //PEA_ZAD1_LITTLE_H

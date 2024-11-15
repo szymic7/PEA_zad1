@@ -1,10 +1,16 @@
+#include <climits>
+#include <iostream>
 #include "../headers/algorithm.h"
+
+using namespace std;
 
 //----------------------------------------------------------------------------------
 
 Algorithm::Algorithm() {
     n = 0;
     costMatrix = nullptr;
+    result = INT_MAX;
+    result_vertices = nullptr;
 }
 
 //----------------------------------------------------------------------------------
@@ -17,6 +23,12 @@ void Algorithm::setN(int size) {
                 delete[] costMatrix[i];
             }
             delete[] costMatrix;
+        }
+
+        // Czyszczenie tablicy z wynikowa sciezka
+        if (result_vertices != nullptr) {
+            delete [] result_vertices;
+            result_vertices = nullptr;
         }
     }
 
@@ -36,6 +48,23 @@ void Algorithm::setCostMatrix(int **matrix) {
                 costMatrix[i][j] = matrix[i][j];
             }
         }
+    }
+}
+
+//----------------------------------------------------------------------------------
+
+int Algorithm::getResult() {
+    return result;
+}
+
+//----------------------------------------------------------------------------------
+
+void Algorithm::printResultVertices() {
+    if(result_vertices != nullptr) {
+        for (int i = 0; i < n; i++) {
+            cout << result_vertices[i] << ", ";
+        }
+        cout << result_vertices[0] << endl;
     }
 }
 

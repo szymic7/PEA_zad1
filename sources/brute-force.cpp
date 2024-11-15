@@ -9,8 +9,8 @@ using namespace std;
 //----------------------------------------------------------------------------------
 
 BruteForce::BruteForce() : Algorithm() {
-    result = INT_MAX;
-    result_vertices = nullptr;
+    //result = INT_MAX;
+    //result_vertices = nullptr;
 }
 
 //----------------------------------------------------------------------------------
@@ -78,7 +78,7 @@ void BruteForce::generatePermutations(int* vertex, int start, int end, int s, in
 
 //----------------------------------------------------------------------------------
 
-int BruteForce::getResult() {
+/*int BruteForce::getResult() {
     return result;
 }
 
@@ -91,6 +91,6 @@ void BruteForce::printResultVertices() {
         }
         cout << result_vertices[0] << endl;
     }
-}
+}*/
 
 //----------------------------------------------------------------------------------
