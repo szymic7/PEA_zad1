@@ -1,16 +1,13 @@
 #include "../headers/brute-force.h"
 #include <climits>
 #include <vector>
-#include <algorithm>
-#include <iostream>
 
 using namespace std;
 
 //----------------------------------------------------------------------------------
 
 BruteForce::BruteForce() : Algorithm() {
-    //result = INT_MAX;
-    //result_vertices = nullptr;
+
 }
 
 //----------------------------------------------------------------------------------
@@ -40,15 +37,15 @@ void BruteForce::bruteForceAlgorithm(int s) {
 
 //----------------------------------------------------------------------------------
 
-void BruteForce::generatePermutations(int* vertex, int start, int end, int s, int& min_path_cost) {
+void BruteForce::generatePermutations(int* vertices, int start, int end, int s, int& min_path_cost) {
     if (start == end) { // dla kompletnej permutacji (wszystkie wierzcholki uwzglednione)
 
         int current_path_cost = 0;
         int current_vertex = s; // Zaczynamy od wierzcholka startowego
 
         for (int i = 0; i <= end; i++) {
-            current_path_cost += costMatrix[current_vertex][vertex[i]];
-            current_vertex = vertex[i];
+            current_path_cost += costMatrix[current_vertex][vertices[i]];
+            current_vertex = vertices[i];
         }
         // Krawedz od ostatniego odwiedzanego wierzcholka do wierzcholka startowego
         current_path_cost += costMatrix[current_vertex][s];
@@ -61,7 +58,7 @@ void BruteForce::generatePermutations(int* vertex, int start, int end, int s, in
             result_vertices[0] = s;
             int index = 1;
             for (int i = 0; i <= end; i++) {
-                result_vertices[index++] = vertex[i];
+                result_vertices[index++] = vertices[i];
             }
         }
 
@@ -69,28 +66,11 @@ void BruteForce::generatePermutations(int* vertex, int start, int end, int s, in
 
         // Wygenerowanie permutacji przez rekurencyjna zamiane elementow tablicy
         for (int i = start; i <= end; i++) {
-            swap(vertex[start], vertex[i]);
-            generatePermutations(vertex, start + 1, end, s, min_path_cost);
-            swap(vertex[start], vertex[i]);  // Odwrocenie tablicy po wyznaczeniu permutacji
+            swap(vertices[start], vertices[i]);
+            generatePermutations(vertices, start + 1, end, s, min_path_cost);
+            swap(vertices[start], vertices[i]);  // Odwrocenie tablicy po wyznaczeniu permutacji
         }
     }
 }
-
-//----------------------------------------------------------------------------------
-
-/*int BruteForce::getResult() {
-    return result;
-}
-
-//----------------------------------------------------------------------------------
-
-void BruteForce::printResultVertices() {
-    if(result_vertices != nullptr) {
-        for (int i = 0; i < n; i++) {
-            cout << result_vertices[i] << ", ";
-        }
-        cout << result_vertices[0] << endl;
-    }
-}*/
 
 //----------------------------------------------------------------------------------

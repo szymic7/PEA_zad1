@@ -4,15 +4,7 @@
 //----------------------------------------------------------------------------------
 
 DynamicProgramming::DynamicProgramming() : Algorithm() {
-    //result = INT_MAX;
-    //result_vertices = nullptr;
     memo = nullptr;
-}
-
-//----------------------------------------------------------------------------------
-
-void DynamicProgramming::setStart(int s) {
-    start = s;
 }
 
 //----------------------------------------------------------------------------------
@@ -47,6 +39,12 @@ void DynamicProgramming::setN(int size) {
         result_vertices = new int[n];
     }
 
+}
+
+//----------------------------------------------------------------------------------
+
+void DynamicProgramming::setStart(int s) {
+    start = s;
 }
 
 //----------------------------------------------------------------------------------
@@ -128,22 +126,5 @@ void DynamicProgramming::buildResultPath() {
         pos = best_next;
     }
 }
-
-//----------------------------------------------------------------------------------
-
-/*int DynamicProgramming::getResult() {
-    return result;
-}
-
-//----------------------------------------------------------------------------------
-
-void DynamicProgramming::printResultVertices() {
-    if(result_vertices != nullptr) {
-        for (int i = 0; i < n; i++) {
-            cout << result_vertices[i] << ", ";
-        }
-        cout << result_vertices[0] << endl;
-    }
-}*/
 
 //----------------------------------------------------------------------------------

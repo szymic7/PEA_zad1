@@ -20,7 +20,7 @@ class BinaryHeap {
         }
 
         Node pop() {
-            if (heap.empty()) throw out_of_range("Heap is empty");
+            if (heap.empty()) throw out_of_range("Kopiec jest pusty");
             Node minNode = heap[0];
             heap[0] = heap.back();
             heap.pop_back();
@@ -29,7 +29,7 @@ class BinaryHeap {
         }
 
         Node top() const {
-            if (heap.empty()) throw out_of_range("Heap is empty");
+            if (heap.empty()) throw out_of_range("Kopiec jest pusty");
             return heap[0];
         }
 

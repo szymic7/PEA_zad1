@@ -9,6 +9,8 @@
 
 using namespace std;
 
+//-------------------------------------------------------------------------------------
+
 void showMenu()
 {
     int choice = 0, n = 0;
@@ -18,7 +20,7 @@ void showMenu()
     // Macierz kosztow
     int **costMatrix = nullptr;
 
-    // Algorithms objects
+    // Obiekty klas reprezentujacych algorytmy
     BruteForce bruteForce;
     Little little;
     DynamicProgramming dynamicProgramming;
@@ -27,11 +29,11 @@ void showMenu()
     unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
     std::default_random_engine rng(seed);
 
-    // Measuring time
+    // Pomiar czasu
     chrono::high_resolution_clock::time_point startTime, endTime;
     chrono::duration<double, std::milli> time(0);
 
-    // DRUGI POZIOM MENU - TWORZENIE TABLICY/WYSWIETLANIE/SORTOWANIE
+
     do {
         cout << endl << "Wybierz operacje: " << endl;
         cout << "--------------------------------------------------" << endl;
@@ -120,7 +122,7 @@ void showMenu()
                 break;
             }
 
-            case 3: // wyswietl ostatnio utworzona tablice
+            case 3: // wyswietl ostatnio utworzona macierz
             {
                 if (costMatrix != nullptr) {
                     cout << endl << "Macierz kosztow:" << endl;
@@ -139,7 +141,7 @@ void showMenu()
                 break;
             }
 
-            case 4: // Algorytm przeszkuania zupelnego
+            case 4: // Algorytm przegladu zupelnego
             {
                 if (costMatrix != nullptr) {
 
@@ -218,6 +220,9 @@ void showMenu()
     } while (!quit);
 }
 
+//-------------------------------------------------------------------------------------
+
+// Metoda do pomiarow dla algorytmu przegladu zupelnego
 void testBruteForce() {
 
     BruteForce bruteForce;
@@ -278,17 +283,159 @@ void testBruteForce() {
 
         }
 
-        // Ogarnąć ten typ
         double avg_time = time.count() / 100.0;
         cout << endl << "Sredni czas dzialania algorytmu dla n = " << n << ": " << avg_time << " ms." << endl;
     }
 
+}
 
+//-------------------------------------------------------------------------------------
+
+// Metoda do pomiarow dla algorytmu Little'a
+void testLittle() {
+
+    Little little;
+    int** costMatrix = nullptr;
+    int n;
+    int testValues[] = {5, 7, 9, 10, 11, 12, 13};
+
+    // Inicjalizacja generatora liczb losowych
+    unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
+    std::default_random_engine rng(seed);
+
+    // Measuring time
+    chrono::high_resolution_clock::time_point startTime, endTime;
+    chrono::duration<double, std::milli> time(0);
+
+
+    // Pomiary dla 7 kolejnych wartości
+    for(int y = 0; y < 7; y++) {
+
+        // Wyzerowanie zmiennej przechowujacej sume czasow ze 100 pomiarow
+        time = chrono::duration<double, std::milli>(0);
+
+        // Kolejne wartosci n dla danego testu
+        n = testValues[y];
+
+        // 100 pomiarów
+        for(int x = 0; x < 100; x++) {
+
+            // Inicjalizacja nowej macierzy o wymiarach NxN
+            costMatrix = new int *[n];
+            for (int i = 0; i < n; i++) {
+                costMatrix[i] = new int[n];
+            }
+
+            // Wypelnienie macierzy losowymi wartosciami z przedzialu 1-150
+            for (int i = 0; i < n; i++) {
+                for (int j = 0; j < n; j++) {
+                    if (i == j)
+                        costMatrix[i][j] = -1; // na przekatnej macierzy wartosci -1
+                    else
+                        costMatrix[i][j] = rng() % 100 + 1; // losowa liczba z przedziału 1-150
+                }
+            }
+
+            little.setN(n);
+            little.setCostMatrix(costMatrix);
+
+            startTime = chrono::high_resolution_clock::now();
+            little.algorithm();
+            endTime = chrono::high_resolution_clock::now();
+            time += chrono::duration<double, std::milli>(endTime - startTime);
+
+            // Usuniecie macierzy kosztow
+            for (int i = 0; i < n; i++) {
+                delete[] costMatrix[i];
+            }
+            delete[] costMatrix;
+
+        }
+
+        double avg_time = time.count() / 100.0;
+        cout << endl << "Sredni czas dzialania algorytmu dla n = " << n << ": " << avg_time << " ms." << endl;
+    }
 
 }
+
+//-------------------------------------------------------------------------------------
+
+// Metoda do pomiarow dla algorytmu DP
+void testDP() {
+
+    DynamicProgramming dynamicProgramming;
+    int** costMatrix = nullptr;
+    int n;
+    int testValues[] = {5, 7, 9, 10, 11, 12, 13};
+
+    // Inicjalizacja generatora liczb losowych
+    unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
+    std::default_random_engine rng(seed);
+
+    // Measuring time
+    chrono::high_resolution_clock::time_point startTime, endTime;
+    chrono::duration<double, std::milli> time(0);
+
+
+    // Pomiary dla 7 kolejnych wartości
+    for(int y = 0; y < 7; y++) {
+
+        // Wyzerowanie zmiennej przechowujacej sume czasow ze 100 pomiarow
+        time = chrono::duration<double, std::milli>(0);
+
+        // Kolejne wartosci n dla danego testu
+        n = testValues[y];
+
+        // 100 pomiarów
+        for(int x = 0; x < 100; x++) {
+
+            // Inicjalizacja nowej macierzy o wymiarach NxN
+            costMatrix = new int *[n];
+            for (int i = 0; i < n; i++) {
+                costMatrix[i] = new int[n];
+            }
+
+            // Wypelnienie macierzy losowymi wartosciami z przedzialu 1-150
+            for (int i = 0; i < n; i++) {
+                for (int j = 0; j < n; j++) {
+                    if (i == j)
+                        costMatrix[i][j] = -1; // na przekatnej macierzy wartosci -1
+                    else
+                        costMatrix[i][j] = rng() % 100 + 1; // losowa liczba z przedziału 1-150
+                }
+            }
+
+            dynamicProgramming.setN(n);
+            dynamicProgramming.setCostMatrix(costMatrix);
+            dynamicProgramming.setStart(rng() % n);
+
+            startTime = chrono::high_resolution_clock::now();
+            dynamicProgramming.dynamicProgrammingAlgorithm();
+            endTime = chrono::high_resolution_clock::now();
+            time += chrono::duration<double, std::milli>(endTime - startTime);
+
+            // Usuniecie macierzy kosztow
+            for (int i = 0; i < n; i++) {
+                delete[] costMatrix[i];
+            }
+            delete[] costMatrix;
+
+        }
+
+        double avg_time = time.count() / 100.0;
+        cout << endl << "Sredni czas dzialania algorytmu dla n = " << n << ": " << avg_time << " ms." << endl;
+    }
+
+}
+
+//-------------------------------------------------------------------------------------
 
 int main() {
-    //showMenu();
-    testBruteForce();
+    //testBruteForce();
+    //testLittle();
+    //testDP();
+    showMenu();
     return 0;
 }
+
+//-------------------------------------------------------------------------------------

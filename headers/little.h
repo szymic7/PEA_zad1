@@ -22,16 +22,19 @@ struct Node {
 };
 
 class Little : public Algorithm {
-    public:
-        Little();
-        void algorithm(/*int** costMatrix, int size*/);
+
+public:
+
+    Little();
+    void algorithm();
 
 private:
-        void deleteMatrix(int** matrix, int size);
-        int** copyMatrix(int** matrix, int size);
-        void replaceZeroesWithINF(int** matrix, int size);
-        int reduceMatrix(int** matrix, int size);
-        Node newNode(int** parentMatrix, int level, int i, int j, int parentCost, std::vector<int> path, int size);
+
+    void deleteMatrix(int** matrix, int size);
+    int** copyMatrix(int** matrix, int size);
+    void replaceZeroesWithINF(int** matrix, int size);
+    int reduceMatrix(int** matrix, int size);
+    Node newNode(int** parentMatrix, int level, int i, int j, int parentCost, std::vector<int> path, int size);
 };
 
 #endif //PEA_ZAD1_LITTLE_H

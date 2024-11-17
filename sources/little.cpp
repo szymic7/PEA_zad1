@@ -37,7 +37,7 @@ void Little::deleteMatrix(int** matrix, int size) {
 
 //--------------------------------------------------------------------------------------------------------
 
-// Funkcja zamieniająca wszystkie 0 na INF w macierzy pierwotnej
+// Funkcja zamieniająca wszystkie 0 i -1 na INF w macierzy pierwotnej
 void Little::replaceZeroesWithINF(int** matrix, int size) {
     for (int i = 0; i < size; ++i) {
         for (int j = 0; j < size; ++j) {
@@ -114,12 +114,12 @@ Node Little::newNode(int** parentMatrix, int level, int i, int j, int parentCost
         node.reducedMatrix[k][j] = INF;
     }
 
-    // Droga z miasta j do samego siebie
+    // Zablokowanie drogi z miasta j do samego siebie
     node.reducedMatrix[j][0] = INF;
 
     // Redukcja macierzy
     node.cost = parentCost + parentMatrix[i][j];
-    node.cost += reduceMatrix(node.reducedMatrix, size);    //Całkowity zaktualizowany koszt ścieżki
+    node.cost += reduceMatrix(node.reducedMatrix, size); // Całkowity zaktualizowany koszt ścieżki
 
     node.vertex = j;
     node.level = level;
@@ -130,7 +130,7 @@ Node Little::newNode(int** parentMatrix, int level, int i, int j, int parentCost
 
 //--------------------------------------------------------------------------------------------------------
 
-void Little::algorithm(/*int **costMatrix, int size*/) {
+void Little::algorithm() {
 
     int** matrix = copyMatrix(costMatrix, n);
 
@@ -140,7 +140,6 @@ void Little::algorithm(/*int **costMatrix, int size*/) {
     // Kolejka priorytetowa, zaimplementowana jako kopiec binarny
     BinaryHeap pq;
     std::vector<int> initialPath = {0};
-    // MOŻNA DODAĆ LOSOWY WIERZCHOŁEK STARTOWY
 
     // Korzeń drzewa decyzyjnego - węzeł początkowy
     Node root;
@@ -161,11 +160,6 @@ void Little::algorithm(/*int **costMatrix, int size*/) {
     while (!pq.empty()) {
         // Wezel o najmniejszym ograniczeniu dolnym (root kopca binarnego)
         Node current = pq.pop();
-
-        /*std::cout << "Wierzcholek: " << current.vertex << ", koszt: " << current.cost<< ", poziom: "<< current.level << "droga: ";
-        for (int i = 0; i < current.path.size(); i++)
-            std::cout << current.path[i] << " ";
-        std::cout << std::endl << "Ograniczenie gorne (minCost): " << minCost << endl << endl;*/
 
         // Jesli level == size - 1, to mamy kompletna sciezke
         if (current.level == n - 1) {
